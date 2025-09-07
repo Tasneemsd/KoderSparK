@@ -1,36 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import axios from "axios";  // ✅ API requests
 import { 
   BookOpen, 
   Calendar, 
-  TrendingUp, 
   Bell, 
   Settings, 
   Search,
-  Filter,
   Download,
-  Plus,
   BarChart3,
-  PieChart,
   UserCheck,
   Clock,
   Award,
-  MessageSquare,
   Home,
   FileText,
   GraduationCap,
-  CheckCircle,
-  AlertCircle,
-  Star,
-  Play,
   User,
-  Target,
-  Bookmark,
-  Users,
   QrCode,
-  CreditCard,
-  Calendar as CalendarIcon,
-  BookMarked,
-  Trophy,
   Brain,
   Lightbulb,
   Newspaper,
@@ -38,24 +23,52 @@ import {
   Mail,
   MapPin,
   DollarSign,
-  ClipboardList,
-  Eye,
-  ChevronRight,
-  Activity
+  Eye
 } from 'lucide-react';
 import './StudentDashboard.css';
 
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [notifications, setNotifications] = useState([]);
-  const [aiContent, setAiContent] = useState({
-    studyTip: "Break down complex problems into smaller, manageable parts. This helps improve understanding and retention.",
-    motivationalQuote: "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
-    educationalNews: "New research shows that active learning techniques improve student performance by 40%"
-  });
+  const [data, setData] = useState(null);  // ✅ backend data
+  const token = localStorage.getItem("token");
 
-  // Student Data
-  const studentData = {
+  // ✅ Fetch data from backend
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          "https://koderspark-backend-2.onrender.com/api/students/dashboard",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setData(res.data);
+
+        // If backend sends notifications, use them
+        if (res.data.notifications) {
+          setNotifications(res.data.notifications);
+        } else {
+          // fallback dummy notifications
+          setNotifications([
+            { id: 1, title: "Assignment Due", message: "Mathematics homework due tomorrow", time: "2 hours ago", type: "warning" },
+            { id: 2, title: "Exam Schedule", message: "Mid-term exam timetable updated", time: "1 day ago", type: "info" },
+            { id: 3, title: "Fee Reminder", message: "Monthly fee due in 5 days", time: "2 days ago", type: "alert" },
+            { id: 4, title: "Event Notification", message: "Science Fair registration open", time: "3 days ago", type: "success" }
+          ]);
+        }
+      } catch (err) {
+        console.error("Error fetching dashboard:", err);
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
+  if (!data) return <p>Loading dashboard...</p>;  // ✅ loading state
+
+  // ✅ API data with fallback
+  const studentData = data.student || {
     name: "Emma Johnson",
     rollNo: "2024-CS-001",
     class: "Grade 12",
@@ -67,81 +80,33 @@ const StudentDashboard = () => {
     },
     attendance: 96,
     upcomingExam: "Physics Mid-term - March 25, 2025",
-    feeDueDate: "March 30, 2025",
-    qrCode: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzAwMCIvPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjZmZmIi8+CiAgPHJlY3QgeD0iMjAiIHk9IjIwIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIGZpbGw9IiMwMDAiLz4KICA8dGV4dCB4PSI1MCIgeT0iNTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmYiIGZvbnQtc2l6ZT0iOCI+UVI8L3RleHQ+Cjwvc3ZnPg=="
+    feeDueDate: "March 30, 2025"
   };
 
-  const attendanceData = {
-    daily: [
-      { date: "2025-01-20", status: "Present", subject: "Mathematics" },
-      { date: "2025-01-20", status: "Present", subject: "Physics" },
-      { date: "2025-01-20", status: "Present", subject: "Chemistry" },
-      { date: "2025-01-19", status: "Present", subject: "English" },
-      { date: "2025-01-19", status: "Absent", subject: "History" }
-    ],
+  const attendanceData = data.attendance || {
+    daily: [],
     monthly: {
-      totalDays: 20,
-      presentDays: 19,
-      absentDays: 1,
-      percentage: 95
+      totalDays: 0,
+      presentDays: 0,
+      absentDays: 0,
+      percentage: 0
     }
   };
 
-  const academicReports = [
-    { subject: "Mathematics", grade: "A+", percentage: 95, remarks: "Excellent performance in calculus" },
-    { subject: "Physics", grade: "A", percentage: 88, remarks: "Strong understanding of concepts" },
-    { subject: "Chemistry", grade: "A-", percentage: 85, remarks: "Good lab work, improve theory" },
-    { subject: "English", grade: "B+", percentage: 82, remarks: "Creative writing skills developing well" },
-    { subject: "Computer Science", grade: "A+", percentage: 97, remarks: "Outstanding programming skills" }
-  ];
+  const academicReports = data.reports || [];
+  const upcomingEvents = data.events || [];
+  const classSchedule = data.schedule || [];
+  const examSchedule = data.exams?.schedule || [];
+  const examResults = data.exams?.results || [];
+  const previousPapers = data.papers || [];
 
-  const upcomingEvents = [
-    { title: "Science Fair", date: "2025-02-15", type: "Competition", description: "Annual science project exhibition" },
-    { title: "Sports Day", date: "2025-02-20", type: "Sports", description: "Inter-house athletics competition" },
-    { title: "Cultural Festival", date: "2025-03-05", type: "Cultural", description: "Music, dance, and drama performances" },
-    { title: "Parent-Teacher Meeting", date: "2025-03-10", type: "Academic", description: "Quarterly progress discussion" }
-  ];
+  const aiContent = {
+    studyTip: "Break down complex problems into smaller, manageable parts. This helps improve understanding and retention.",
+    motivationalQuote: "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
+    educationalNews: "New research shows that active learning techniques improve student performance by 40%"
+  };
 
-  const classSchedule = [
-    { time: "8:00 AM - 9:00 AM", subject: "Mathematics", teacher: "Prof. Wilson", room: "Room 205" },
-    { time: "9:00 AM - 10:00 AM", subject: "Physics", teacher: "Dr. Johnson", room: "Lab 3" },
-    { time: "10:30 AM - 11:30 AM", subject: "Chemistry", teacher: "Prof. Davis", room: "Lab 1" },
-    { time: "11:30 AM - 12:30 PM", subject: "English", teacher: "Ms. Brown", room: "Room 101" },
-    { time: "1:30 PM - 2:30 PM", subject: "Computer Science", teacher: "Mr. Smith", room: "Computer Lab" },
-    { time: "2:30 PM - 3:30 PM", subject: "History", teacher: "Mrs. Taylor", room: "Room 302" }
-  ];
-
-  const examSchedule = [
-    { subject: "Mathematics", date: "2025-03-25", time: "9:00 AM - 12:00 PM", room: "Hall A", type: "Mid-term" },
-    { subject: "Physics", date: "2025-03-27", time: "9:00 AM - 12:00 PM", room: "Hall B", type: "Mid-term" },
-    { subject: "Chemistry", date: "2025-03-29", time: "9:00 AM - 12:00 PM", room: "Hall A", type: "Mid-term" },
-    { subject: "English", date: "2025-04-01", time: "9:00 AM - 12:00 PM", room: "Hall C", type: "Mid-term" }
-  ];
-
-  const examResults = [
-    { subject: "Mathematics", marks: "95/100", grade: "A+", rank: 2 },
-    { subject: "Physics", marks: "88/100", grade: "A", rank: 5 },
-    { subject: "Chemistry", marks: "85/100", grade: "A-", rank: 7 },
-    { subject: "English", marks: "82/100", grade: "B+", rank: 12 }
-  ];
-
-  const previousPapers = [
-    { subject: "Mathematics", year: "2024", term: "Final", type: "PDF", size: "2.5 MB" },
-    { subject: "Physics", year: "2024", term: "Mid-term", type: "PDF", size: "1.8 MB" },
-    { subject: "Chemistry", year: "2023", term: "Final", type: "PDF", size: "3.2 MB" },
-    { subject: "English", year: "2024", term: "Final", type: "PDF", size: "1.5 MB" }
-  ];
-
-  useEffect(() => {
-    // Simulate loading notifications
-    setNotifications([
-      { id: 1, title: "Assignment Due", message: "Mathematics homework due tomorrow", time: "2 hours ago", type: "warning" },
-      { id: 2, title: "Exam Schedule", message: "Mid-term exam timetable updated", time: "1 day ago", type: "info" },
-      { id: 3, title: "Fee Reminder", message: "Monthly fee due in 5 days", time: "2 days ago", type: "alert" },
-      { id: 4, title: "Event Notification", message: "Science Fair registration open", time: "3 days ago", type: "success" }
-    ]);
-  }, []);
-
+  // === COMPONENTS ===
   const renderStudentCard = () => (
     <div className="student-card">
       <div className="student-card-header">
@@ -309,6 +274,7 @@ const StudentDashboard = () => {
     </div>
   );
 
+  // === MAIN RETURN ===
   return (
     <div className="student-dashboard">
       {/* Header */}
@@ -418,7 +384,7 @@ const StudentDashboard = () => {
                   <div key={index} className="record-row">
                     <span className="record-date">{record.date}</span>
                     <span className="record-subject">{record.subject}</span>
-                    <span className={`record-status ${record.status.toLowerCase()}`}>
+                    <span className={`record-status ${record.status?.toLowerCase()}`}>
                       {record.status}
                     </span>
                   </div>
@@ -440,7 +406,7 @@ const StudentDashboard = () => {
                 <div key={index} className="report-card">
                   <div className="report-header">
                     <h3>{report.subject}</h3>
-                    <span className={`grade ${report.grade.replace('+', 'plus').replace('-', 'minus')}`}>
+                    <span className={`grade ${report.grade?.replace('+', 'plus').replace('-', 'minus')}`}>
                       {report.grade}
                     </span>
                   </div>
@@ -475,7 +441,7 @@ const StudentDashboard = () => {
                   </div>
                   <div className="event-content">
                     <h3>{event.title}</h3>
-                    <span className={`event-type ${event.type.toLowerCase()}`}>{event.type}</span>
+                    <span className={`event-type ${event.type?.toLowerCase()}`}>{event.type}</span>
                     <p>{event.description}</p>
                   </div>
                   <button className="event-action">
@@ -528,16 +494,25 @@ const StudentDashboard = () => {
             
             <div className="exams-sections">
               <div className="exam-schedule-section">
-                <h3>Upcoming Exams</h3>
-                <div className="exam-schedule-list">
+                <h3>Exam Schedule</h3>
+                <div className="exam-schedule-table">
                   {examSchedule.map((exam, index) => (
-                    <div key={index} className="exam-item">
-                      <div className="exam-subject">{exam.subject}</div>
-                      <div className="exam-details">
-                        <span><Calendar size={14} /> {exam.date}</span>
-                        <span><Clock size={14} /> {exam.time}</span>
-                        <span><MapPin size={14} /> {exam.room}</span>
-                        <span className="exam-type">{exam.type}</span>
+                    <div key={index} className="exam-row">
+                      <div className="exam-date">
+                        <Calendar size={16} />
+                        <span>{new Date(exam.date).toLocaleDateString()}</span>
+                      </div>
+                      <div className="exam-subject">
+                        <BookOpen size={16} />
+                        <span>{exam.subject}</span>
+                      </div>
+                      <div className="exam-time">
+                        <Clock size={16} />
+                        <span>{exam.time}</span>
+                      </div>
+                      <div className="exam-room">
+                        <MapPin size={16} />
+                        <span>{exam.room}</span>
                       </div>
                     </div>
                   ))}
@@ -545,16 +520,16 @@ const StudentDashboard = () => {
               </div>
               
               <div className="exam-results-section">
-                <h3>Recent Results</h3>
-                <div className="results-list">
+                <h3>Exam Results</h3>
+                <div className="results-grid">
                   {examResults.map((result, index) => (
-                    <div key={index} className="result-item">
-                      <div className="result-subject">{result.subject}</div>
-                      <div className="result-marks">{result.marks}</div>
-                      <div className={`result-grade ${result.grade.replace('+', 'plus').replace('-', 'minus')}`}>
-                        {result.grade}
+                    <div key={index} className="result-card">
+                      <h4>{result.subject}</h4>
+                      <div className="result-score">
+                        <span className="marks">{result.marks}/{result.total}</span>
+                        <span className={`grade ${result.grade?.toLowerCase()}`}>{result.grade}</span>
                       </div>
-                      <div className="result-rank">Rank: {result.rank}</div>
+                      <p className="remarks">{result.remarks}</p>
                     </div>
                   ))}
                 </div>
@@ -566,27 +541,23 @@ const StudentDashboard = () => {
         {activeTab === 'papers' && (
           <div className="papers-content">
             <div className="content-header">
-              <h2>Previous Papers</h2>
-              <p>Repository of past examination papers</p>
+              <h2>Previous Exam Papers</h2>
+              <p>Download past exam papers for practice</p>
             </div>
             
-            <div className="papers-grid">
+            <div className="papers-list">
               {previousPapers.map((paper, index) => (
-                <div key={index} className="paper-card">
-                  <div className="paper-icon">
-                    <FileText size={32} />
-                  </div>
+                <div key={index} className="paper-item">
                   <div className="paper-info">
-                    <h3>{paper.subject}</h3>
-                    <div className="paper-details">
-                      <span>Year: {paper.year}</span>
-                      <span>Term: {paper.term}</span>
-                      <span>Size: {paper.size}</span>
+                    <BookOpen size={20} />
+                    <div>
+                      <h4>{paper.subject}</h4>
+                      <span>{paper.exam}</span>
                     </div>
                   </div>
-                  <button className="paper-download">
+                  <button className="download-btn">
                     <Download size={16} />
-                    Download
+                    <span>Download</span>
                   </button>
                 </div>
               ))}
@@ -594,6 +565,16 @@ const StudentDashboard = () => {
           </div>
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="dashboard-footer">
+        <p>&copy; 2025 Koder Spark. All rights reserved.</p>
+        <div className="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">Support</a>
+        </div>
+      </footer>
     </div>
   );
 };

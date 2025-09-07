@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Home.css";
 
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL = "https://koderspark-backend-2.onrender.com/api/auth/me";
 
 const Home = () => {
   const navigate = useNavigate();

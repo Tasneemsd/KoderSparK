@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
 import { 
   Users, 
   BookOpen, 
@@ -14,24 +15,42 @@ import {
   FileText,
   GraduationCap,
   CheckCircle,
-  AlertCircle,
   Star,
-  Edit,
   Eye,
-  Send,
   Brain,
   Upload,
-  PenTool,
-  ClipboardList,
   BarChart3
 } from 'lucide-react';
 import './TeacherDashboard.css';
 
 const TeacherDashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
+  const [data, setData] = useState(null);
+  const token = localStorage.getItem("token");
 
-  // Teacher information
-  const teacherInfo = {
+  // ✅ Fetch teacher dashboard data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          "https://koderspark-backend-2.onrender.com/api/teachers/dashboard",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setData(res.data);
+      } catch (err) {
+        console.error("Error fetching teacher dashboard:", err);
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
+  if (!data) return <p>Loading dashboard...</p>;
+
+  // ✅ Fallback defaults if API misses fields
+  const teacherInfo = data.teacher || {
     name: "Prof. Sarah Wilson",
     subjects: ["Mathematics", "Physics"],
     classes: ["Grade 10A", "Grade 11B", "Grade 12C"],
@@ -39,13 +58,11 @@ const TeacherDashboard = () => {
     pendingEvaluations: 12
   };
 
-  // Quick actions for teacher card
   const quickActions = [
-    { title: 'Upcoming Classes', icon: Clock, count: 3 },
-    { title: 'Pending Evaluations', icon: CheckCircle, count: 12 }
+    { title: 'Upcoming Classes', icon: Clock, count: data.upcomingClasses || 3 },
+    { title: 'Pending Evaluations', icon: CheckCircle, count: data.pendingEvaluations || 12 }
   ];
 
-  // Main sections/buttons
   const mainSections = [
     { id: 'attendance', title: 'Attendance', icon: UserCheck, description: 'Mark & edit student attendance' },
     { id: 'reports', title: 'Reports', icon: FileText, description: 'Add academic/behavioral remarks' },
@@ -54,36 +71,21 @@ const TeacherDashboard = () => {
     { id: 'papers', title: 'Previous Papers', icon: Upload, description: 'Upload/manage past papers' }
   ];
 
-  // AI insights
-  const aiInsights = [
-    { 
-      message: "Class 10A has low average in Math → Plan revision session",
-      type: "warning",
-      icon: Brain
-    },
-    { 
-      message: "Grade 12C showing excellent progress in Physics",
-      type: "success", 
-      icon: Star
-    },
-    {
-      message: "Attendance rate dropped 5% this week - consider follow-up",
-      type: "info",
-      icon: BarChart3
-    }
+  const aiInsights = data.insights || [
+    { message: "Class 10A has low average in Math → Plan revision session", type: "warning", icon: Brain },
+    { message: "Grade 12C showing excellent progress in Physics", type: "success", icon: Star },
+    { message: "Attendance rate dropped 5% this week - consider follow-up", type: "info", icon: BarChart3 }
   ];
 
-  // Notifications (pending admin approval)
-  const pendingNotifications = [
+  const pendingNotifications = data.notifications || [
     { message: "Request to announce Math test postponement", status: "pending" },
     { message: "Parent-teacher meeting schedule update", status: "approved" }
   ];
 
-  // Events (view only - cannot edit)
-  const upcomingEvents = [
-    { title: "Annual Science Fair", date: "March 15, 2024", time: "10:00 AM" },
-    { title: "Parent-Teacher Conference", date: "March 20, 2024", time: "2:00 PM" },
-    { title: "Mid-term Examinations", date: "March 25, 2024", time: "9:00 AM" }
+  const upcomingEvents = data.events || [
+    { title: "Annual Science Fair", date: "March 15, 2025", time: "10:00 AM" },
+    { title: "Parent-Teacher Conference", date: "March 20, 2025", time: "2:00 PM" },
+    { title: "Mid-term Examinations", date: "March 25, 2025", time: "9:00 AM" }
   ];
 
   return (
@@ -114,7 +116,7 @@ const TeacherDashboard = () => {
         <div className="header-right">
           <button className="header-btn">
             <Bell />
-            <span className="notification-badge">7</span>
+            <span className="notification-badge">{pendingNotifications.length}</span>
           </button>
           <button className="header-btn">
             <Settings />
@@ -126,7 +128,7 @@ const TeacherDashboard = () => {
             />
             <div className="profile-info">
               <span className="profile-name">{teacherInfo.name}</span>
-              <span className="profile-role">Mathematics & Physics Teacher</span>
+              <span className="profile-role">{teacherInfo.subjects.join(', ')} Teacher</span>
             </div>
           </div>
         </div>

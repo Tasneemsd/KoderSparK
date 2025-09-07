@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from "axios"; // ✅ Import axios
 import { 
   Users, 
   GraduationCap, 
@@ -25,8 +26,31 @@ import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [data, setData] = useState(null); // ✅ API data state
+  const token = localStorage.getItem("token");
 
-  const statsCards = [
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          "https://koderspark-backend-2.onrender.com/api/admin/dashboard",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setData(res.data);
+      } catch (err) {
+        console.error("Error fetching admin dashboard:", err);
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
+  if (!data) return <p>Loading dashboard...</p>; // ✅ Loader
+
+  // ✅ Use API data if available, else fallback to defaults
+  const statsCards = data.stats || [
     {
       title: 'Total Students',
       value: '3,247',
@@ -61,7 +85,7 @@ const AdminDashboard = () => {
     }
   ];
 
-  const recentActivities = [
+  const recentActivities = data.activities || [
     { 
       type: 'enrollment', 
       message: 'New student Sarah Johnson enrolled in Grade 11', 
@@ -88,7 +112,7 @@ const AdminDashboard = () => {
     }
   ];
 
-  const upcomingEvents = [
+  const upcomingEvents = data.events || [
     { 
       title: 'Parent-Teacher Conference', 
       date: 'Mar 18, 2025', 
