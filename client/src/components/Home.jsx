@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export default function Home() {
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = () => {
@@ -12,6 +13,7 @@ export default function Home() {
     navigate("/login");  // 👈 route you want to go to
   };
   const [activeIndex, setActiveIndex] = useState(null);
+
 
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -38,20 +40,30 @@ export default function Home() {
   return (
     <div className="home">
 
-
       {/* 🔹 Navbar */}
       <nav className="navbar">
         <div className="logo">Koder<span>Spark</span></div>
-        <ul>
+
+        {/* Hamburger icon for mobile */}
+        <div className="menu-icon" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? "✖" : "☰"}
+        </div>
+
+
+        <ul className={isOpen ? "nav-links open" : "nav-links"}>
           <li className="active">Home</li>
           <li>About Us</li>
           <li>Academics</li>
           <li>Admissions</li>
           <li>Events</li>
           <li>Contact Us</li>
+          <li>
+            <button className="btn-login1" onClick={handleLogin}>Login</button>
+          </li>
         </ul>
-        <button className="btn-login1" onClick={handleLogin}>Login</button>
+
       </nav>
+
 
       {/* 🔹 Hero Section */}
       <section className="hero">
@@ -243,7 +255,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-            {/* 🔹 Footer */}
+      {/* 🔹 Footer */}
       <footer className="footer">
         <div className="footer-container">
           <h3 className="footer-logo">Koder<span>Spark</span></h3>
