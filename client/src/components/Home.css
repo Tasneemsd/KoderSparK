@@ -453,3 +453,25 @@ body {
   color: #666;
   margin: 0;
 }
+.footer {
+  background: #111;           /* Dark background */
+  color: #fff;                /* White text */
+  padding: 20px 0;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-logo {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.footer-logo span {
+  color: #f77f00;   /* Orange accent */
+}

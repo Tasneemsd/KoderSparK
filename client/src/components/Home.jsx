@@ -243,6 +243,17 @@ export default function Home() {
           </div>
         </div>
       </section>
+            {/* 🔹 Footer */}
+      <footer className="footer">
+        <div className="footer-container">
+          <h3 className="footer-logo">Koder<span>Spark</span></h3>
+          <p>© 2025 Koder Spark Pvt. Ltd. | All Rights Reserved</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
     </div>
 
   );
