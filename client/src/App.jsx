@@ -11,40 +11,40 @@ import AdminDashboard from "./components/AdminDashboard";
 
 function App() {
   return (
-    <AuthProvider>
-     
+    
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
 
-          {/* Role-based dashboards */}
+          {/* Protected Routes */}
           <Route
-            path="/student/*"
+            path="/student"
             element={
-              <ProtectedRoute allowedRole="student">
+              <ProtectedRoute>
                 <StudentDashboard />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/teacher/*"
+            path="/teacher"
             element={
-              <ProtectedRoute allowedRole="teacher">
+              <ProtectedRoute>
                 <TeacherDashboard />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/admin/*"
+            path="/admin"
             element={
-              <ProtectedRoute allowedRole="admin">
+              <ProtectedRoute>
                 <AdminDashboard />
               </ProtectedRoute>
             }
           />
         </Routes>
-     
-    </AuthProvider>
+      </AuthProvider>
+   
   );
 }
 

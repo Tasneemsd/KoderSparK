@@ -1,305 +1,251 @@
-import React, { useState, useEffect } from 'react';
-import axios from "axios";
-import { 
-  Users, 
-  BookOpen, 
-  Calendar, 
-  Bell, 
-  Settings, 
+import React, { useState } from "react";
+import {
+  Users,
+  BookOpen,
+  Calendar,
+  Bell,
+  Settings,
   Search,
-  UserCheck,
   Clock,
   Award,
   MessageSquare,
-  Home,
-  FileText,
   GraduationCap,
   CheckCircle,
   Star,
   Eye,
   Brain,
   Upload,
-  BarChart3
-} from 'lucide-react';
-import './TeacherDashboard.css';
+  BarChart3,
+  UserCheck,
+} from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+import "./TeacherDashboard.css";
 
-const TeacherDashboard = () => {
-  const [activeSection, setActiveSection] = useState('dashboard');
-  const [data, setData] = useState(null);
-  const token = localStorage.getItem("token");
+export default function TeacherDashboard() {
+  const [notifications] = useState([
+    { id: 1, text: "New assignment submitted by Rahul", time: "2h ago" },
+    { id: 2, text: "Meeting scheduled for Friday", time: "5h ago" },
+    { id: 3, text: "New message from Admin", time: "1d ago" },
+  ]);
 
-  // ✅ Fetch teacher dashboard data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          "https://koderspark-backend-2.onrender.com/api/teachers/dashboard",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setData(res.data);
-      } catch (err) {
-        console.error("Error fetching teacher dashboard:", err);
-      }
-    };
+  const [events] = useState([
+    { id: 1, title: "Parent-Teacher Meeting", date: "15 Sept" },
+    { id: 2, title: "Exam Paper Submission", date: "20 Sept" },
+    { id: 3, title: "Science Fair", date: "25 Sept" },
+  ]);
 
-    fetchData();
-  }, [token]);
-
-  if (!data) return <p>Loading dashboard...</p>;
-
-  // ✅ Fallback defaults if API misses fields
-  const teacherInfo = data.teacher || {
-    name: "Prof. Sarah Wilson",
-    subjects: ["Mathematics", "Physics"],
-    classes: ["Grade 10A", "Grade 11B", "Grade 12C"],
-    totalStudents: 247,
-    pendingEvaluations: 12
-  };
-
-  const quickActions = [
-    { title: 'Upcoming Classes', icon: Clock, count: data.upcomingClasses || 3 },
-    { title: 'Pending Evaluations', icon: CheckCircle, count: data.pendingEvaluations || 12 }
+  // Attendance Data
+  const attendanceData = [
+    { day: "Mon", value: 92 },
+    { day: "Tue", value: 96 },
+    { day: "Wed", value: 88 },
+    { day: "Thu", value: 94 },
+    { day: "Fri", value: 90 },
   ];
 
-  const mainSections = [
-    { id: 'attendance', title: 'Attendance', icon: UserCheck, description: 'Mark & edit student attendance' },
-    { id: 'reports', title: 'Reports', icon: FileText, description: 'Add academic/behavioral remarks' },
-    { id: 'schedule', title: 'Schedule', icon: Calendar, description: 'View & modify teaching schedules' },
-    { id: 'exams', title: 'Exams', icon: Award, description: 'Upload results, assign exams' },
-    { id: 'papers', title: 'Previous Papers', icon: Upload, description: 'Upload/manage past papers' }
+  // Performance Distribution
+  const performanceData = [
+    { name: "Excellent", value: 45 },
+    { name: "Good", value: 35 },
+    { name: "Average", value: 15 },
+    { name: "Weak", value: 5 },
   ];
 
-  const aiInsights = data.insights || [
-    { message: "Class 10A has low average in Math → Plan revision session", type: "warning", icon: Brain },
-    { message: "Grade 12C showing excellent progress in Physics", type: "success", icon: Star },
-    { message: "Attendance rate dropped 5% this week - consider follow-up", type: "info", icon: BarChart3 }
-  ];
-
-  const pendingNotifications = data.notifications || [
-    { message: "Request to announce Math test postponement", status: "pending" },
-    { message: "Parent-teacher meeting schedule update", status: "approved" }
-  ];
-
-  const upcomingEvents = data.events || [
-    { title: "Annual Science Fair", date: "March 15, 2025", time: "10:00 AM" },
-    { title: "Parent-Teacher Conference", date: "March 20, 2025", time: "2:00 PM" },
-    { title: "Mid-term Examinations", date: "March 25, 2025", time: "9:00 AM" }
-  ];
+  const COLORS = ["#4caf50", "#2196f3", "#ffc107", "#f44336"];
 
   return (
     <div className="teacher-dashboard">
-      {/* Header */}
-      <header className="dashboard-header">
-        <div className="header-left">
-          <div className="logo-section">
-            <div className="logo-icon">
-              <GraduationCap size={32} />
-            </div>
-            <div className="logo-text">
-              <h1>Koder Spark</h1>
-              <p>Teacher Portal</p>
-            </div>
+      {/* ===== Header ===== */}
+      <header className="td-header">
+        <div className="td-logo-section">
+          <div className="td-logo-icon">
+            <GraduationCap size={22} />
+          </div>
+          <div className="td-logo-text">
+            <h1>Koder Spark</h1>
+            <p>Teacher Panel</p>
           </div>
         </div>
-        <div className="header-center">
-          <div className="search-container">
-            <Search className="search-icon" />
-            <input 
-              type="text" 
-              placeholder="Search students, classes, assignments..." 
-              className="search-input"
-            />
-          </div>
+
+        <div className="td-search-container">
+          <Search size={18} />
+          <input
+            type="text"
+            placeholder="Search students, courses, events..."
+            className="td-search-input"
+          />
         </div>
-        <div className="header-right">
-          <button className="header-btn">
-            <Bell />
-            <span className="notification-badge">{pendingNotifications.length}</span>
+
+        <div className="td-header-right">
+          <button className="td-header-btn">
+            <Settings size={20} />
           </button>
-          <button className="header-btn">
-            <Settings />
+          <button className="td-header-btn">
+            <Bell size={20} />
+            <span className="td-notification-badge">3</span>
           </button>
-          <div className="teacher-profile">
-            <img 
-              src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400" 
-              alt="Teacher Profile" 
+          <div className="td-profile">
+            <img
+              src="https://i.pravatar.cc/40"
+              alt="profile"
+              className="td-profile-img"
             />
-            <div className="profile-info">
-              <span className="profile-name">{teacherInfo.name}</span>
-              <span className="profile-role">{teacherInfo.subjects.join(', ')} Teacher</span>
-            </div>
+            <span className="td-profile-name">Ms. Priya</span>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="dashboard-main">
-        {activeSection === 'dashboard' && (
-          <div className="dashboard-content">
-            {/* Teacher Card */}
-            <section className="teacher-card-section">
-              <div className="teacher-card">
-                <div className="teacher-card-header">
-                  <div className="teacher-avatar">
-                    <img 
-                      src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400" 
-                      alt="Teacher Profile" 
-                    />
-                  </div>
-                  <div className="teacher-details">
-                    <h2>{teacherInfo.name}</h2>
-                    <div className="teacher-info">
-                      <div className="info-item">
-                        <span className="info-label">Subjects Assigned:</span>
-                        <span className="info-value">{teacherInfo.subjects.join(', ')}</span>
-                      </div>
-                      <div className="info-item">
-                        <span className="info-label">Classes Handled:</span>
-                        <span className="info-value">{teacherInfo.classes.join(', ')}</span>
-                      </div>
-                      <div className="info-item">
-                        <span className="info-label">Total Students:</span>
-                        <span className="info-value">{teacherInfo.totalStudents}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="teacher-card-actions">
-                  <h3>Quick Actions</h3>
-                  <div className="quick-actions-grid">
-                    {quickActions.map((action, index) => (
-                      <div key={index} className="quick-action-item">
-                        <action.icon size={20} />
-                        <div className="action-info">
-                          <span className="action-title">{action.title}</span>
-                          <span className="action-count">{action.count}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Main Sections */}
-            <section className="main-sections">
-              <h3>Dashboard Sections</h3>
-              <div className="sections-grid">
-                {mainSections.map((section) => (
-                  <button 
-                    key={section.id}
-                    className="section-card"
-                    onClick={() => setActiveSection(section.id)}
-                  >
-                    <div className="section-icon">
-                      <section.icon size={32} />
-                    </div>
-                    <div className="section-content">
-                      <h4>{section.title}</h4>
-                      <p>{section.description}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            {/* AI Insights */}
-            <section className="ai-insights-section">
-              <div className="section-header">
-                <h3>
-                  <Brain size={20} />
-                  AI-Driven Insights
-                </h3>
-              </div>
-              <div className="insights-grid">
-                {aiInsights.map((insight, index) => (
-                  <div key={index} className={`insight-card ${insight.type}`}>
-                    <insight.icon size={20} />
-                    <p>{insight.message}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Notifications & Events */}
-            <section className="notifications-events-section">
-              <div className="notifications-events-grid">
-                <div className="notifications-card">
-                  <div className="card-header">
-                    <h3>Notifications to Students</h3>
-                    <span className="subtitle">(Pending Admin Approval)</span>
-                  </div>
-                  <div className="notifications-list">
-                    {pendingNotifications.map((notification, index) => (
-                      <div key={index} className={`notification-item ${notification.status}`}>
-                        <MessageSquare size={16} />
-                        <div className="notification-content">
-                          <p>{notification.message}</p>
-                          <span className={`status ${notification.status}`}>
-                            {notification.status === 'pending' ? 'Pending Approval' : 'Approved'}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="events-card">
-                  <div className="card-header">
-                    <h3>Upcoming Events</h3>
-                    <span className="subtitle">(View Only)</span>
-                  </div>
-                  <div className="events-list">
-                    {upcomingEvents.map((event, index) => (
-                      <div key={index} className="event-item">
-                        <Calendar size={16} />
-                        <div className="event-content">
-                          <h4>{event.title}</h4>
-                          <div className="event-details">
-                            <span>{event.date}</span>
-                            <span>{event.time}</span>
-                          </div>
-                        </div>
-                        <Eye size={16} className="view-only-icon" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        )}
-
-        {/* Section Content */}
-        {activeSection !== 'dashboard' && (
-          <div className="section-content">
-            <div className="section-header">
-              <button 
-                className="back-btn"
-                onClick={() => setActiveSection('dashboard')}
-              >
-                ← Back to Dashboard
-              </button>
-              <div className="section-title">
-                <h2>{mainSections.find(s => s.id === activeSection)?.title} Management</h2>
-                <p>Manage your {activeSection} efficiently and effectively</p>
-              </div>
-            </div>
-            <div className="section-placeholder">
-              <div className="placeholder-content">
-                <BookOpen size={64} />
-                <h3>{mainSections.find(s => s.id === activeSection)?.title} Interface</h3>
-                <p>{mainSections.find(s => s.id === activeSection)?.description}</p>
-                <button className="get-started-btn">Get Started</button>
-              </div>
+      {/* ===== Content ===== */}
+      <div className="td-content">
+        {/* Overview Cards */}
+        <div className="td-cards">
+          <div className="td-card purple">
+            <Users size={26} />
+            <div>
+              <h3>120</h3>
+              <p>Students</p>
             </div>
           </div>
-        )}
-      </main>
+          <div className="td-card blue">
+            <BookOpen size={26} />
+            <div>
+              <h3>8</h3>
+              <p>Subjects</p>
+            </div>
+          </div>
+          <div className="td-card green">
+            <CheckCircle size={26} />
+            <div>
+              <h3>95%</h3>
+              <p>Attendance</p>
+            </div>
+          </div>
+          <div className="td-card orange">
+            <Award size={26} />
+            <div>
+              <h3>15</h3>
+              <p>Awards</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Notifications & Events */}
+        <div className="td-flex">
+          <div className="td-section">
+            <h2 className="td-section-title">
+              <Bell size={18} /> Notifications
+            </h2>
+            <ul className="td-list">
+              {notifications.map((note) => (
+                <li key={note.id} className="td-list-item">
+                  <MessageSquare size={16} />
+                  <span>{note.text}</span>
+                  <small>{note.time}</small>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="td-section">
+            <h2 className="td-section-title">
+              <Calendar size={18} /> Upcoming Events
+            </h2>
+            <ul className="td-list">
+              {events.map((event) => (
+                <li key={event.id} className="td-list-item">
+                  <Clock size={16} />
+                  <span>{event.title}</span>
+                  <small>{event.date}</small>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Charts Section */}
+        <div className="td-flex">
+          <div className="td-section">
+            <h2 className="td-section-title">
+              <BarChart3 size={18} /> Attendance Trend
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={attendanceData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="day" />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#6a11cb"
+                  strokeWidth={3}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="td-section">
+            <h2 className="td-section-title">
+              <Star size={18} /> Student Performance
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={performanceData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={90}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label
+                >
+                  {performanceData.map((entry, index) => (
+                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="td-section">
+          <h2 className="td-section-title">
+            <Star size={18} /> Quick Actions
+          </h2>
+          <div className="td-actions">
+            <button>
+              <Upload size={18} /> Upload Assignment
+            </button>
+            <button>
+              <BarChart3 size={18} /> View Reports
+            </button>
+            <button>
+              <Eye size={18} /> Review Submissions
+            </button>
+            <button>
+              <Brain size={18} /> Create Quiz
+            </button>
+            <button>
+              <UserCheck size={18} /> Mark Attendance
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default TeacherDashboard;
+}

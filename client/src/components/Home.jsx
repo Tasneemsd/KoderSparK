@@ -1,384 +1,249 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { React, useState } from "react";
+
 import "./Home.css";
+import { useNavigate } from "react-router-dom";
 
-const BASE_URL = "https://koderspark-backend-2.onrender.com/api/auth/me";
 
-const Home = () => {
+export default function Home() {
   const navigate = useNavigate();
-  const [announcements, setAnnouncements] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/announcements`);
-        setAnnouncements(res.data);
-      } catch (error) {
-        console.error("Error fetching announcements:", error);
-        // Fallback data for demo
-        setAnnouncements([
-          {
-            _id: "1",
-            title: "Spring Enrollment Now Open",
-            description: "Join us for Spring 2025! Early bird discounts available until January 15th. Don't miss this opportunity to be part of our amazing community.",
-            date: new Date().toISOString()
-          },
-          {
-            _id: "2",
-            title: "Science Fair Champions",
-            description: "Our students won first place at the Regional Science Fair! Congratulations to all participants for their innovative projects.",
-            date: new Date(Date.now() - 86400000).toISOString()
-          },
-          {
-            _id: "3",
-            title: "New Technology Center",
-            description: "State-of-the-art computer lab with VR equipment now open. Students can explore cutting-edge technology and programming.",
-            date: new Date(Date.now() - 172800000).toISOString()
-          }
-        ]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAnnouncements();
-  }, []);
-
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
 
   const handleLogin = () => {
-    try {
-      navigate("/login");
-    } catch (error) {
-      console.log("Navigation not available - running in standalone mode");
-    }
+    // after validation or auth check
+    navigate("/login");  // 👈 route you want to go to
+  };
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  const toggleFAQ = (index) => {
+    setActiveIndex(activeIndex === index ? null : index);
   };
 
+  const faqs = [
+    {
+      question: "Why choose Koder Spark Academy?",
+      answer:
+        "Koder Spark Academy provides world-class education with modern labs, expert teachers, and a focus on overall student growth.",
+    },
+    {
+      question: "What programs are offered?",
+      answer:
+        "We offer classes from Kindergarten to Grade 12, along with extracurricular activities like sports, arts, and coding clubs.",
+    },
+    {
+      question: "How do parents stay updated?",
+      answer:
+        "Parents can track their child’s progress through our Parent Portal and regular meetings with teachers.",
+    },
+  ];
+
   return (
-    <>
-      {/* Navigation */}
+    <div className="home">
+
+
+      {/* 🔹 Navbar */}
       <nav className="navbar">
-        <div className="nav-container">
-          <div className="logo">
-            <span className="logo-icon">🎓</span>
-            Koder Spark
-          </div>
-          <ul className="nav-links">
-            <li><a href="#home" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>Home</a></li>
-            <li><a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>About Us</a></li>
-            <li><a href="#academics" onClick={(e) => { e.preventDefault(); scrollToSection('academics'); }}>Academics</a></li>
-            <li><a href="#admissions" onClick={(e) => { e.preventDefault(); scrollToSection('admissions'); }}>Admissions</a></li>
-            <li><a href="#departments" onClick={(e) => { e.preventDefault(); scrollToSection('departments'); }}>Departments</a></li>
-            <li><a href="#events" onClick={(e) => { e.preventDefault(); scrollToSection('events'); }}>Events</a></li>
-            <li><a href="#news" onClick={(e) => { e.preventDefault(); scrollToSection('news'); }}>Announcements</a></li>
-            <li><a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact Us</a></li>
-          </ul>
-          <div className="auth-buttons">
-            <button className="btn login-btn" onClick={handleLogin}>
-              Login
-            </button>
-          </div>
-          <div className="mobile-menu-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
+        <div className="logo">Koder<span>Spark</span></div>
+        <ul>
+          <li className="active">Home</li>
+          <li>About Us</li>
+          <li>Academics</li>
+          <li>Admissions</li>
+          <li>Events</li>
+          <li>Contact Us</li>
+        </ul>
+        <button className="btn-login1" onClick={handleLogin}>Login</button>
       </nav>
 
-      {/* Hero Section */}
-      <section className="hero" id="home">
-        <div className="hero-overlay"></div>
-        <div className="hero-content">
-          <h1 className="animate-fade-in-up">Bright Future Starts Here</h1>
-          <p className="animate-fade-in-up">
-            For 25+ years, shaping confident, creative, and compassionate
-            leaders. Join a community of achievers and dreamers.
-          </p>
-          <div className="cta-buttons animate-fade-in-up">
-            <button 
-              className="cta-button primary-btn"
-              onClick={() => scrollToSection('about')}
-            >
-              Learn More
-            </button>
-            <button 
-              className="cta-button secondary-btn"
-              onClick={() => scrollToSection('admissions')}
-            >
-              Apply Now
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section className="section" id="about">
-        <div className="container">
-          <h2>Why Families Choose Us</h2>
+      {/* 🔹 Hero Section */}
+      <section className="hero">
+        <div className="overlay">
+          <h1>Koder<span>Spark</span>Academy</h1>
           <p>
-            Bright Future Academy nurtures curiosity, resilience, and lifelong
-            learning with tech-powered classrooms, passionate teachers, and
-            holistic development.
+            We provide always our best educational services for our all students
+            and always try to achieve our students’ trust and satisfaction
           </p>
-          <div className="stats">
-            <div className="stat-box animate-float">
-              <div className="stat-icon">👨‍🎓</div>
-              <h3>500+</h3>
-              <p>Happy Students</p>
-            </div>
-            <div className="stat-box animate-float">
-              <div className="stat-icon">🎯</div>
-              <h3>98%</h3>
-              <p>College Ready</p>
-            </div>
-            <div className="stat-box animate-float">
-              <div className="stat-icon">🏆</div>
-              <h3>25+</h3>
-              <p>Awards Won</p>
-            </div>
+          <div className="hero-buttons">
+            <button className="btn-orange">Our Service</button>
+            <button className="btn-dark">Get a Quote</button>
           </div>
         </div>
       </section>
 
-      {/* Departments Section */}
-      <section className="section departments" id="departments">
-        <div className="container">
-          <h2>Our Academic Departments</h2>
-          <p>Excellence across all disciplines with specialized programs and expert faculty.</p>
-          <div className="departments-grid">
-            <div className="department-card">
-              <div className="dept-icon">🔬</div>
-              <h3>Science & Technology</h3>
-              <p>Advanced laboratories, robotics, and STEM programs preparing students for the future.</p>
-            </div>
-            <div className="department-card">
-              <div className="dept-icon">📚</div>
-              <h3>Languages & Literature</h3>
-              <p>Comprehensive language programs fostering communication and critical thinking skills.</p>
-            </div>
-            <div className="department-card">
-              <div className="dept-icon">🎨</div>
-              <h3>Arts & Creativity</h3>
-              <p>Music, visual arts, drama, and digital media to nurture creative expression.</p>
-            </div>
-            <div className="department-card">
-              <div className="dept-icon">⚽</div>
-              <h3>Physical Education</h3>
-              <p>Comprehensive sports programs promoting fitness, teamwork, and healthy competition.</p>
-            </div>
-          </div>
+      {/* 🔹 About Section */}
+      <section className="about">
+        <div className="about-left">
+          <img
+            src="https://html.kodesolution.com/2017/learnpro-html/demo/images/about/1.jpg"
+            alt="About Koder Spark Academy"
+          />
         </div>
-      </section>
 
-      {/* Features/Academics */}
-      <section className="section features" id="academics">
-        <div className="container">
-          <h2>Our Pillars of Excellence</h2>
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">💻</div>
-              <h3>Tech-Powered Learning</h3>
-              <p>Smart classrooms, VR labs, and digital tools for future-ready learning.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">👩‍🏫</div>
-              <h3>Dedicated Teachers</h3>
-              <p>Passionate educators who mentor, inspire, and guide every child.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">🏃‍♂️</div>
-              <h3>Sports & Activities</h3>
-              <p>15+ sports teams and 20+ clubs for teamwork and passions.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">📖</div>
-              <h3>Modern Library</h3>
-              <p>10,000+ books, digital resources, and collaborative learning spaces.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Events Section */}
-      <section className="section events" id="events">
-        <div className="container">
-          <h2>Upcoming Events</h2>
-          <p>Join us for exciting activities and important school events throughout the year.</p>
-          <div className="events-grid">
-            <div className="event-card">
-              <div className="event-date">
-                <span className="month">JAN</span>
-                <span className="day">15</span>
-              </div>
-              <div className="event-details">
-                <h3>Open House</h3>
-                <p>Tour our facilities and meet our amazing faculty. Perfect for prospective families!</p>
-                <span className="event-time">10:00 AM - 2:00 PM</span>
-              </div>
-            </div>
-            <div className="event-card">
-              <div className="event-date">
-                <span className="month">JAN</span>
-                <span className="day">22</span>
-              </div>
-              <div className="event-details">
-                <h3>Science Fair</h3>
-                <p>Students showcase their innovative projects and compete for prizes.</p>
-                <span className="event-time">9:00 AM - 4:00 PM</span>
-              </div>
-            </div>
-            <div className="event-card">
-              <div className="event-date">
-                <span className="month">FEB</span>
-                <span className="day">05</span>
-              </div>
-              <div className="event-details">
-                <h3>Winter Concert</h3>
-                <p>Our music students perform in this spectacular evening concert.</p>
-                <span className="event-time">7:00 PM - 9:00 PM</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Announcements Section */}
-      <section className="section news" id="news">
-        <div className="container">
-          <h2>News & Announcements</h2>
-          <div className="news-grid">
-            {loading ? (
-              <div className="loading-spinner">
-                <div className="spinner"></div>
-                <p>Loading announcements...</p>
-              </div>
-            ) : announcements.length > 0 ? (
-              announcements.map((item) => (
-                <div key={item._id} className="news-card">
-                  <div className="news-icon">📢</div>
-                  <h3>{item.title}</h3>
-                  <p>{item.description}</p>
-                  <span className="news-date">
-                    {new Date(item.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <div className="no-announcements">
-                <p>No announcements available at the moment.</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials/Admissions */}
-      <section className="testimonials" id="admissions">
-        <div className="container">
-          <h2>What Our Families Say</h2>
-          <div className="testimonial-grid">
-            <div className="testimonial-card">
-              <div className="testimonial-quote">"</div>
-              <p>"My daughter transformed into a confident leader. Teachers here truly care about each child's growth and development."</p>
-              <div className="testimonial-author">
-                <div className="author-avatar">👩</div>
-                <div>
-                  <strong>Sarah Johnson</strong>
-                  <span>Parent, Grade 5</span>
-                </div>
-              </div>
-            </div>
-            <div className="testimonial-card">
-              <div className="testimonial-quote">"</div>
-              <p>"From hating science to winning competitions – this school changed my life and opened doors I never knew existed."</p>
-              <div className="testimonial-author">
-                <div className="author-avatar">👨</div>
-                <div>
-                  <strong>Alex Chen</strong>
-                  <span>Student, Grade 8</span>
-                </div>
-              </div>
-            </div>
-            <div className="testimonial-card">
-              <div className="testimonial-quote">"</div>
-              <p>"Amazing programs and communication. Our son loves coming to school every day and can't wait to share what he learned."</p>
-              <div className="testimonial-author">
-                <div className="author-avatar">👫</div>
-                <div>
-                  <strong>Michael & Lisa Rodriguez</strong>
-                  <span>Parents, Grade 3</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="cta-section">
-        <div className="container">
-          <h2>Your Child's Future Starts Here</h2>
+        <div className="about-right">
+          <h2>
+            About <span>Koder Spark Academy</span>
+          </h2>
           <p>
-            Limited spots available for 2025 admissions. Join our community of
-            learners and achievers today.
+            At <strong>Koder Spark Academy</strong>, we believe education is more than academics.
+            Our mission is to empower students with knowledge, creativity, and values that prepare them for life.
           </p>
-          <button 
-            className="cta-btn"
-            onClick={() => scrollToSection('contact')}
-          >
-            Start Learning
-          </button>
+          <p>
+            With a team of highly qualified teachers, state-of-the-art infrastructure, and a focus on both
+            academics and extracurricular activities, we ensure holistic growth for every student.
+          </p>
+          <button className="btn-orange">Learn More</button>
+        </div>
+
+        <div className="ad-banner">
+          <h3>🎓 Admissions Open for 2026</h3>
+          <p>
+            <span>Offers</span> for early applicants!
+          </p>
+          <a href="#" className="btn-dark">Apply Now</a>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="footer" id="contact">
-        <div className="container">
-          <div className="footer-content">
-            <div className="footer-section">
-              <h3>🎓 Koder Spark Pvt Ltd </h3>
-              <p>Transforming lives since years.</p>
-              <div className="social-links">
-                <a href="#" className="social-link">📘</a>
-                <a href="#" className="social-link">📧</a>
-                <a href="#" className="social-link">📱</a>
-              </div>
-            </div>
-            <div className="footer-section">
-              <h4>Contact Info</h4>
-              <p>📍 123 Education Street, Learning City</p>
-              <p>📞 (555) 123-SCHOOL</p>
-              <p>✉️ hello@brightfuture.edu</p>
-            </div>
-            <div className="footer-section">
-              <h4>Quick Links</h4>
-              <ul>
-                <li><a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>About Us</a></li>
-                <li><a href="#academics" onClick={(e) => { e.preventDefault(); scrollToSection('academics'); }}>Academics</a></li>
-                <li><a href="#admissions" onClick={(e) => { e.preventDefault(); scrollToSection('admissions'); }}>Admissions</a></li>
-                <li><a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a></li>
-              </ul>
-            </div>
+      {/* 🔹 Key Highlights Section */}
+      <section className="highlights">
+        <h2>Our <span>Key Highlights</span></h2>
+        <div className="highlights-container">
+          <div className="highlight-card">
+            <h3>🎓 20+ Years</h3>
+            <p>Excellence in education with a strong academic reputation.</p>
           </div>
-          <div className="footer-bottom">
-            <p>© 2025 Koder Spark Pvt Ltd. All Rights Reserved.</p>
+          <div className="highlight-card">
+            <h3>🌍 5000+ Alumni</h3>
+            <p>A global network of successful graduates making an impact worldwide.</p>
+          </div>
+          <div className="highlight-card">
+            <h3>🏆 Top Ranked</h3>
+            <p>Recognized among leading institutions for innovation & learning.</p>
+          </div>
+          <div className="highlight-card">
+            <h3>📚 Expert Faculty</h3>
+            <p>Dedicated educators guiding students toward excellence and growth.</p>
           </div>
         </div>
-      </footer>
-    </>
+      </section>
+
+
+
+      {/* 🔹 Events + FAQ */}
+      <section className="events">
+        <div className="events-left">
+          <h2>Upcoming <span>Events</span></h2>
+          <div className="event-card">
+            <span className="date">28 Feb</span>
+            <div>
+              <h4>Admission Fair Spring 2026</h4>
+              <p>📍 25 Newyork City | 🕔 5.00pm - 7.30pm</p>
+            </div>
+
+          </div>
+
+          <div className="event-card">
+            <span className="date">28 Feb</span>
+            <div>
+              <h4>Learning Spoken English</h4>
+              <p>📍 25 Newyork City | 🕔 5.00pm - 7.30pm</p>
+            </div>
+          </div>
+          <div className="event-card">
+            <span className="date">28 Feb</span>
+            <div>
+              <h4>Annual Day</h4>
+              <p>📍 25 Newyork City | 🕔 5.00pm - 7.30pm</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* 🔹 FAQ Section */}
+      <section className="faq-section">
+        <div className="events-right">
+          <h2>
+            Frequently Asked <span>Questions</span>
+          </h2>
+          <div className="faq">
+            {faqs.map((item, index) => (
+              <div
+                key={index}
+                className={`faq-item ${activeIndex === index ? "active" : ""}`}
+                onClick={() => toggleFAQ(index)}
+              >
+                <div className="faq-question">
+                  {item.question}
+                  <span className="faq-toggle">{activeIndex === index ? "−" : "+"}</span>
+                </div>
+                {activeIndex === index && (
+                  <div className="faq-answer">{item.answer}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 🔹 Teachers Section */}
+      <section className="teachers-section">
+        <div className="container">
+          <h2 className="section-subtitle">
+            Meet Our <span className="highlight">Qualified Teachers</span>
+          </h2>
+          <p className="section-desc">
+            Our dedicated and highly experienced teachers nurture students to achieve academic excellence and personal growth.
+          </p>
+          <div className="teachers">
+            <div className="teacher-card">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdWyjalyGA9iIh6kJBSA2AF66LXL_0N78ILQ&s" alt="teacher" />
+              <h4>Priya</h4>
+              <p>Mathematics Teacher</p>
+            </div>
+            <div className="teacher-card">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnHMeXYE_oRrMvogK1YIK72sPPQZHISXxyFQ&s" alt="teacher" />
+              <h4>Sravani</h4>
+              <p>Hindi Teacher</p>
+            </div>
+            <div className="teacher-card">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTe68-YUES8GJPe8nGMi_bCUxOB7cTuGnRmww&s" alt="teacher" />
+              <h4>Raghav</h4>
+              <p>Physics Teacher</p>
+            </div>
+            <div className="teacher-card">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTQixVEuAfqIWJGXREPu2PVzLSNpX-qG2a-w&s" alt="teacher" />
+              <h4>Maheswari</h4>
+              <p>Chemistry Teacher</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Campus Gallery Section */}
+      <section className="gallery">
+        <div className="container">
+          <h2 className="section-subtitle">CAMPUS <span className="highlight">GALLERY</span></h2>
+          <p className="section-desc">SEE OUR GALLERY PICTURES</p>
+          <div className="gallery-tabs">
+            <button className="active">All</button>
+            <button>Photos</button>
+            <button>Campus</button>
+            <button>Students</button>
+          </div>
+
+          <div className="gallery-grid">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxARfkSbrHZW632FdLjIaGivrNnxc6WFp55Q&s" alt="gallery" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThvSOlHArUlA67ub5rCqej3djKY44lFc3_Fw&s" alt="gallery" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXzg3xPR1mT9pKn2zy0iC_VVUqHRRufdWo0Q&s" alt="gallery" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLSNfb5Ty7SNvhj5eN2pMme20Vlr8VmmKRiQ&s" alt="gallery" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-3bqHahe6rqrHmU6eDG7KcY2gjSMdK67y1g&s" alt="gallery" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQy0bmuwT6YJe9FtGRI1sZ6fup2Y4RxzQ_yw&s" alt="gallery" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRwjNM7Gq6JfAeGsb7d9NbxlQEGxllG8C38g&s" alt="gallery" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyWoJulmfC2hBS_M_133BPuQVp0nVlIP35uw&s" alt="gallery" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo_TzIxwB9txWN8_vUC1-FR402ZIdSNI7tig&s" alt="gallery" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzoR2PkTg7JbhX8xtBE7SPz7rEm-D2x-K_DQ&s" alt="gallery" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnhCWUwmSIMOIJ_EnNGiaMP_7BqiZl4YLiDA&s" alt="gallery" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBEh8Y1RJjsmlMxVI-d3EMVNC6s0UMSGxKzQ&s" alt="gallery" />
+          </div>
+        </div>
+      </section>
+    </div>
+
   );
-};
-
-export default Home;
+}

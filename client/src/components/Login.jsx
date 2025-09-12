@@ -1,157 +1,123 @@
 import React, { useState } from "react";
-import "./Login.css";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import {
-  MdEmail,
-  MdLock,
-  MdSchool,
-  MdVisibility,
-  MdVisibilityOff,
-} from "react-icons/md";
+import "./Login.css";
 
-function Login() {
+export default function Login() {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
+
+  // Demo user credentials
+  const users = [
+    { username: "student1", password: "12345", role: "student" },
+    { username: "teacher1", password: "12345", role: "teacher" },
+    { username: "admin1", password: "12345", role: "admin" },
+  ];
+
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
-    role: "student", // default role
+    role: "student",
   });
+
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
 
-    try {
-      // 🔹 Call backend login
-      const res = await axios.post("https://koderspark-backend-2.onrender.com/api/auth/login", {
-        email: formData.email,
-        password: formData.password,
-      });
+    const user = users.find(
+      (u) =>
+        u.username === formData.username &&
+        u.password === formData.password &&
+        u.role === formData.role
+    );
 
-      // 🔹 Save token + user in localStorage
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+    if (user) {
+      // Store login data
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", "demo-token");
 
-      // 🔹 Compare role (dropdown vs backend)
-      const roleFromBackend = res.data.user.role;
-      if (formData.role !== roleFromBackend) {
-        setError("Role mismatch. Please select the correct role.");
-        return;
-      }
-
-      // 🔹 Redirect based on backend role
-      if (roleFromBackend === "student") {
-        navigate("/student");
-      } else if (roleFromBackend === "teacher") {
-        navigate("/teacher");
-      } else if (roleFromBackend === "admin") {
-        navigate("/admin");
-      } else {
-        setError("Unknown role, contact administrator.");
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed, try again.");
+      // Role-based navigation
+      if (user.role === "student") navigate("/student");
+      if (user.role === "teacher") navigate("/teacher");
+      if (user.role === "admin") navigate("/admin");
+    } else {
+      setError("Invalid login details. Please try again.");
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-wrapper">
-        {/* Left Side Image */}
-        <div className="login-image">
+    <div className="auth-container">
+      {/* Left Side */}
+      <div className="auth-left">
+        <h2 className="auth-logo">Koder Spark</h2>
+        <div className="auth-illustration">
           <img
-            src="https://static.vecteezy.com/system/resources/previews/002/391/042/non_2x/online-learning-concept-with-cartoon-character-vector.jpg"
-            alt="Students learning"
-            className="login-illustration"
+            src="https://i.pinimg.com/736x/c3/3c/49/c33c499ac84e8b5c424916765c913d6e.jpg"
+            alt="illustration"
           />
         </div>
+      </div>
 
-        {/* Right Side Form */}
-        <div className="login-right">
-          <div className="login-box">
-            <div className="login-header">
-              <MdSchool size={50} className="login-icon" />
-              <h1>Welcome Back!</h1>
-              <p>Continue your learning journey 🚀</p>
+      {/* Right Side */}
+      <div className="auth-right">
+        <div className="auth-box">
+          <h2 className="auth-welcome">Welcome Back</h2>
+
+          {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              className="auth-input"
+            />
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className="auth-input"
+            />
+
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="auth-select"
+            >
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+              <option value="admin">Admin</option>
+            </select>
+
+            <div className="auth-options">
+              <label>
+                <input type="checkbox" /> Keep me logged in
+              </label>
+              <a href="#">Forgot Password?</a>
             </div>
 
-            <form onSubmit={handleSubmit}>
-              {/* Email */}
-              <div className="input-group">
-                <MdEmail className="input-icon" />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+            <button type="submit" className="auth-btn">
+              Log In
+            </button>
+          </form>
 
-              {/* Password */}
-              <div className="input-group">
-                <MdLock className="input-icon" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="toggle-btn"
-                >
-                  {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
-                </button>
-              </div>
-
-              {/* Role Selection */}
-              <div className="input-group">
-                <MdSchool className="input-icon" />
-                <select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="student">Student</option>
-                  <option value="teacher">Teacher</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-
-              {/* Show error */}
-              {error && <p className="error-text">{error}</p>}
-
-              {/* Button */}
-              <button type="submit" className="login-btn1">
-                Login
-              </button>
-
-              {/* Extra */}
-              <div className="extra-links">
-                <a href="#forgot">Forgot Password?</a>
-              </div>
-            </form>
-          </div>
+          <p className="auth-register">
+            Need Help? <br />
+            You are not a member? <a href="#">Register</a>
+          </p>
         </div>
       </div>
     </div>
   );
 }
-
-export default Login;
