@@ -29,7 +29,7 @@ const app = express();
 
 // ✅ CORS setup for development & production
 const allowedOrigins = [
-  "http://localhost:5174", // React dev server
+  "http://localhost:5173", // React dev server
   "https://koder-spark-smoky.vercel.app" // Vercel frontend
 ];
 
@@ -63,6 +63,7 @@ app.use('/api/exams', examsRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/attendance', attendanceRoutes);
+
 app.use('/api/analytics', analyticsRoutes);
 
 // Health check route
