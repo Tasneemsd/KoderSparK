@@ -50,11 +50,11 @@ export default function Home() {
 
         <ul className={isOpen ? "nav-links open" : "nav-links"}>
           <li className="active">Home</li>
-          <li><a href="#about" className="active">About Us</a></li>
-          <li><a href="#academics" className="active">Academics</a></li>
-          <li><a href="#admissions" className="active">Admissions</a></li>
-          <li><a href="#events" className="active">Events</a></li>
-          <li><a href="#contact" className="active">Contact Us</a></li>
+          <li><a href="#about" className="active td ">About Us</a></li>
+          <li><a href="#academics" className="active td">Academics</a></li>
+          <li><a href="#admissions" className="active td">Admissions</a></li>
+          <li><a href="#events" className="active td">Events</a></li>
+          <li><a href="#contact" className="active td">Contact Us</a></li>
           <li>
             <button className="btn-login1" onClick={handleLogin}>Login</button>
           </li>

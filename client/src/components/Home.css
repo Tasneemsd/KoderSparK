@@ -565,6 +565,9 @@ body {
     font-size: 12px;
   }
 }
+.td{
+  text-decoration: none;
+}
 /* 🔹 Navbar responsiveness */
 .menu-icon {
   display: none;
@@ -615,5 +618,5 @@ html {
 }
 
 section {
-  scroll-margin-top: 80px; /* ensures section starts below navbar */
+  scroll-margin-top: 180px; /* ensures section starts below navbar */
 }
