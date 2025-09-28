@@ -608,3 +608,12 @@ body {
     z-index: 1000; /* above menu */
   }
 }
+/* 🔹 Smooth scrolling + offset for fixed navbar */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* adjust to your navbar height */
+}
+
+section {
+  scroll-margin-top: 80px; /* ensures section starts below navbar */
+}
