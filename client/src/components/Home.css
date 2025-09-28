@@ -618,5 +618,6 @@ html {
 }
 
 section {
-  scroll-margin-top: 180px; /* ensures section starts below navbar */
+  scroll-margin-top: 80px;
+  height: 200vh; /* ensures section starts below navbar */
 }
