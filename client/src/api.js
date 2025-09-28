@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://studyhive-070z.onrender.com/api", // 🔴 Replace with your Render backend URL
+  baseURL: import.meta.env.VITE_API_URL, // 🔴 Replace with your Render backend URL
   withCredentials: true,
 });
 
