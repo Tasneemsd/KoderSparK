@@ -1,50 +1,38 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../api"; // import Axios instance
 import "./Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
-
-  // Demo user credentials
-  const users = [
-    { username: "student1", password: "12345", role: "student" },
-    { username: "teacher1", password: "12345", role: "teacher" },
-    { username: "admin1", password: "12345", role: "admin" },
-  ];
-
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    role: "student",
-  });
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
-    const user = users.find(
-      (u) =>
-        u.username === formData.username &&
-        u.password === formData.password &&
-        u.role === formData.role
-    );
+    try {
+      const res = await API.post("/auth/login", {
+        email: formData.email,
+        password: formData.password,
+      });
 
-    if (user) {
-      // Store login data
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", "demo-token");
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      // Role-based navigation
-      if (user.role === "student") navigate("/student");
-      if (user.role === "teacher") navigate("/teacher");
-      if (user.role === "admin") navigate("/admin");
-    } else {
-      setError("Invalid login details. Please try again.");
+      // Redirect based on role
+      const role = res.data.user.role;
+      if (role === "student") navigate("/student");
+      if (role === "teacher") navigate("/teacher");
+      if (role === "admin") navigate("/admin");
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Login failed. Try again.");
     }
   };
 

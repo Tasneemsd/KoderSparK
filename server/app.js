@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const fileUpload = require('express-fileupload');
 const path = require('path');
-const cors = require('cors'); // ✅ Import CORS
+const cors = require('cors');
 
 // Load environment variables
 dotenv.config();
@@ -27,9 +27,21 @@ const analyticsRoutes = require('./src/routes/analytics.routes');
 // Initialize Express
 const app = express();
 
-// ✅ Allow frontend (Vercel) to access backend (Render)
+// ✅ CORS setup for development & production
+const allowedOrigins = [
+  "http://localhost:5174", // React dev server
+  "https://koder-spark-smoky.vercel.app" // Vercel frontend
+];
+
 app.use(cors({
-  origin: "https://koder-spark-smoky.vercel.app/", // 🔴 Replace with your actual Vercel frontend URL
+  origin: function(origin, callback) {
+    // allow requests with no origin (like Postman)
+    if (!origin) return callback(null, true);
+    if (!allowedOrigins.includes(origin)) {
+      return callback(new Error(`CORS policy: origin ${origin} not allowed`), false);
+    }
+    return callback(null, true);
+  },
   credentials: true
 }));
 
