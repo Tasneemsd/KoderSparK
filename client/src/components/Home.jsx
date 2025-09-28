@@ -9,8 +9,8 @@ export default function Home() {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    // after validation or auth check
-    navigate("/login");  // 👈 route you want to go to
+
+    navigate("/login");
   };
   const [activeIndex, setActiveIndex] = useState(null);
 
@@ -21,9 +21,9 @@ export default function Home() {
 
   const faqs = [
     {
-      question: "Why choose Koder Spark Academy?",
+      question: "Why choose StudyHive Academy?",
       answer:
-        "Koder Spark Academy provides world-class education with modern labs, expert teachers, and a focus on overall student growth.",
+        "StudyHive Academy provides world-class education with modern labs, expert teachers, and a focus on overall student growth.",
     },
     {
       question: "What programs are offered?",
@@ -40,35 +40,32 @@ export default function Home() {
   return (
     <div className="home">
 
-      {/* 🔹 Navbar */}
+      {/* Navbar */}
       <nav className="navbar">
-        <div className="logo">Koder<span>Spark</span></div>
+        <div className="logo">Study<span>Hive</span></div>
 
-        {/* Hamburger icon for mobile */}
         <div className="menu-icon" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? "✖" : "☰"}
         </div>
 
-
         <ul className={isOpen ? "nav-links open" : "nav-links"}>
           <li className="active">Home</li>
-          <li>About Us</li>
-          <li>Academics</li>
-          <li>Admissions</li>
-          <li>Events</li>
-          <li>Contact Us</li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#academics">Academics</a></li>
+          <li><a href="#admissions">Admissions</a></li>
+          <li><a href="#events">Events</a></li>
+          <li><a href="#contact">Contact Us</a></li>
           <li>
             <button className="btn-login1" onClick={handleLogin}>Login</button>
           </li>
         </ul>
-
       </nav>
 
 
       {/* 🔹 Hero Section */}
       <section className="hero">
         <div className="overlay">
-          <h1>Koder<span>Spark</span>Academy</h1>
+          <h1>Study<span>Hive</span>Academy</h1>
           <p>
             We provide always our best educational services for our all students
             and always try to achieve our students’ trust and satisfaction
@@ -81,20 +78,20 @@ export default function Home() {
       </section>
 
       {/* 🔹 About Section */}
-      <section className="about">
+      <section className="about" id="about">
         <div className="about-left">
           <img
             src="https://html.kodesolution.com/2017/learnpro-html/demo/images/about/1.jpg"
-            alt="About Koder Spark Academy"
+            alt="About StudyHive Academy"
           />
         </div>
 
         <div className="about-right">
           <h2>
-            About <span>Koder Spark Academy</span>
+            About <span>StudyHive Academy</span>
           </h2>
           <p>
-            At <strong>Koder Spark Academy</strong>, we believe education is more than academics.
+            At <strong>StudyHive Academy</strong>, we believe education is more than academics.
             Our mission is to empower students with knowledge, creativity, and values that prepare them for life.
           </p>
           <p>
@@ -114,7 +111,7 @@ export default function Home() {
       </section>
 
       {/* 🔹 Key Highlights Section */}
-      <section className="highlights">
+      <section className="highlights" id="admissions">
         <h2>Our <span>Key Highlights</span></h2>
         <div className="highlights-container">
           <div className="highlight-card">
@@ -139,7 +136,7 @@ export default function Home() {
 
 
       {/* 🔹 Events + FAQ */}
-      <section className="events">
+      <section className="events" id="events">
         <div className="events-left">
           <h2>Upcoming <span>Events</span></h2>
           <div className="event-card">
@@ -202,7 +199,7 @@ export default function Home() {
           <p className="section-desc">
             Our dedicated and highly experienced teachers nurture students to achieve academic excellence and personal growth.
           </p>
-          <div className="teachers">
+          <div className="teachers" >
             <div className="teacher-card">
               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdWyjalyGA9iIh6kJBSA2AF66LXL_0N78ILQ&s" alt="teacher" />
               <h4>Priya</h4>
@@ -228,7 +225,7 @@ export default function Home() {
       </section>
 
       {/* Campus Gallery Section */}
-      <section className="gallery">
+      <section className="gallery" id="academics">
         <div className="container">
           <h2 className="section-subtitle">CAMPUS <span className="highlight">GALLERY</span></h2>
           <p className="section-desc">SEE OUR GALLERY PICTURES</p>
@@ -256,10 +253,10 @@ export default function Home() {
         </div>
       </section>
       {/* 🔹 Footer */}
-      <footer className="footer">
+      <footer className="footer" id="contact">
         <div className="footer-container">
-          <h3 className="footer-logo">Koder<span>Spark</span></h3>
-          <p>© 2025 Koder Spark Pvt. Ltd. | All Rights Reserved</p>
+          <h3 className="footer-logo">Study<span>Hive</span></h3>
+          <p>© 2025 StudyHive Pvt. Ltd. | All Rights Reserved</p>
         </div>
       </footer>
     </div>
