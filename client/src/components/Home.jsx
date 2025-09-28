@@ -12,6 +12,10 @@ export default function Home() {
 
     navigate("/login");
   };
+  const handleRegister = () => {
+
+    navigate("/register");
+  };
   const [activeIndex, setActiveIndex] = useState(null);
 
 
@@ -57,6 +61,9 @@ export default function Home() {
           <li><a href="#contact" className="active td">Contact Us</a></li>
           <li>
             <button className="btn-login1" onClick={handleLogin}>Login</button>
+          </li>
+          <li>
+            <button className="btn-login1" onClick={handleRegister}>Register</button>
           </li>
         </ul>
       </nav>
