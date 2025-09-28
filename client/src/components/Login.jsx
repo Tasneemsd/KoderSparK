@@ -114,7 +114,7 @@ export default function Login() {
 
           <p className="auth-register">
             Need Help? <br />
-            You are not a member? <a href="#">Register</a>
+            You are not a member? <a href="/register">Register</a>
           </p>
         </div>
       </div>
