@@ -52,7 +52,7 @@ export default function Login() {
     <div className="auth-container">
       {/* Left Side */}
       <div className="auth-left">
-        <h2 className="auth-logo">Koder Spark</h2>
+        <h2 className="auth-logo">Study Hive</h2>
         <div className="auth-illustration">
           <img
             src="https://i.pinimg.com/736x/c3/3c/49/c33c499ac84e8b5c424916765c913d6e.jpg"

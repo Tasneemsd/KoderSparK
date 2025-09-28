@@ -251,9 +251,38 @@ export default function Home() {
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBEh8Y1RJjsmlMxVI-d3EMVNC6s0UMSGxKzQ&s" alt="gallery" />
           </div>
         </div>
+
+        {/* Contact Section */}
+        <section className="contact" id="contact">
+          <div className="contact-container">
+            <h2>Contact <span>Us</span></h2>
+            <p className="contact-subtitle">
+              Have questions? Get in touch with us today.
+            </p>
+
+            <div className="contact-grid">
+              {/* Left: Info */}
+              <div className="contact-info">
+                <h3>Reach Us</h3>
+                <p><strong>Address:</strong> 123 StudyHive School, City, Country</p>
+                <p><strong>Email:</strong> info@studyhive.com</p>
+                <p><strong>Phone:</strong> +91 98765 43210</p>
+              </div>
+
+              {/* Right: Form */}
+              <form className="contact-form">
+                <input type="text" placeholder="Your Name" required />
+                <input type="email" placeholder="Your Email" required />
+                <textarea placeholder="Your Message" rows="5" required></textarea>
+                <button type="submit" className="btn-orange">Send Message</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
       </section>
       {/* 🔹 Footer */}
-      <footer className="footer" id="contact">
+      <footer className="footer" id="footer">
         <div className="footer-container">
           <h3 className="footer-logo">Study<span>Hive</span></h3>
           <p>© 2025 StudyHive Pvt. Ltd. | All Rights Reserved</p>
